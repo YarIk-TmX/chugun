@@ -1,103 +1,177 @@
 from kivy.app import App
+import sys
 from kivy.uix.dropdown import DropDown
 from kivy.uix.button import Button
 from kivy.uix.boxlayout import BoxLayout
 from kivy.core.window import Window
 
-Window.size = (720, 400)
+Window.size = (1300, 510)
 heo_class = ''
+
+
+class LinkedDropdowns(BoxLayout):
+    def __init__(self, data: dict[str, list[str]], **kwargs):
+        super().__init__(**kwargs)
+
+
+        self.data = data
+
+        layout = BoxLayout(orientation='vertical')
+        layout1 = BoxLayout(orientation='vertical')
+        layout2 = BoxLayout(orientation='horizontal')
+        layout3 = BoxLayout(orientation='horizontal')
+        layout4 = BoxLayout(orientation='horizontal')
+        
+
+        self.main_button_1 = Button(text='класс', size_hint=(None, None), pos_hint={'top': 1}, size=(250, 50))
+        self.main_button_2 = Button(text='оружие', size_hint=(None, None), pos_hint={'top': 1}, size=(250, 50))
+
+        self.main_button_3 = Button(text='скилл1', size_hint=(None, None), size=(250, 50))
+        self.main_button_4 = Button(text='скилл2', size_hint=(None, None), size=(250, 50))
+        self.main_button_5 = Button(text='скилл3', size_hint=(None, None), pos_hint={'top': 1}, size=(250, 50))
+        # self.main_button_6 = Button(text='скилл', size_hint=(None, None), pos_hint={'top': 1}, size=(250, 50))
+
+
+        
+        self.add_widget(self.main_button_1)
+        self.add_widget(self.main_button_2)
+        layout1.add_widget(self.main_button_5)
+
+        layout1.add_widget(self.main_button_3)
+        layout4.add_widget(self.main_button_4)
+        
+
+        layout1.add_widget(layout2)
+        layout1.add_widget(layout3)
+        layout1.add_widget(layout4)
+
+        
+        self.add_widget(layout)
+        self.add_widget(layout1)
+        self.dropdown_1 = DropDown()
+        self.dropdown_2 = DropDown()
+
+
+        for category in self.data:
+            btn = Button(text=category, size_hint_y=None, height=40)
+            btn.bind(on_release=lambda btn: self.select_category(btn.text))
+            self.dropdown_1.add_widget(btn)
+
+
+        self.main_button_1.bind(on_release=self.dropdown_1.open)
+        self.main_button_2.bind(on_release=self.open_second_dropdown)
+
+
+    def select_category(self, category):
+        self.main_button_1.text = category
+        self.dropdown_1.dismiss()
+        self.populate_second_dropdown(self.data[category])
+
+
+    def populate_second_dropdown(self, options):
+        self.dropdown_2.clear_widgets()
+        for option in options:
+            btn = Button(text=option, size_hint_y=None, height=40)
+            btn.bind(on_release=lambda btn: self.select_option(btn.text))
+            self.dropdown_2.add_widget(btn)
+
+
+    def select_option(self, option):
+        self.main_button_2.text = option
+        self.dropdown_2.dismiss()
+
+
+    def open_second_dropdown(self, instance):
+        if len(self.dropdown_2.children) > 0:
+            self.dropdown_2.open(self.main_button_2)
+
+
+    def get_selection(self):
+        return self.main_button_1.text, self.main_button_2.text
+#-------------------------------------------------------2----------------------------------------------------------------
+class LinkedDropdowns2(BoxLayout):
+    def __init__(self, data: dict[str, list[str]], **kwargs):
+        super().__init__(**kwargs)
+
+
+        self.data = data
+
+
+        self.main_button_1 = Button(text='упор на', size_hint=(None, None), pos_hint={'top': 1}, size=(250, 50))
+        self.main_button_2 = Button(text='инвентарь', size_hint=(None, None), pos_hint={'top': 1}, size=(250, 50))
+
+
+        self.add_widget(self.main_button_1)
+        self.add_widget(self.main_button_2)
+
+
+        self.dropdown_1 = DropDown()
+        self.dropdown_2 = DropDown()
+
+
+        for category in self.data:
+            btn = Button(text=category, size_hint_y=None, height=40)
+            btn.bind(on_release=lambda btn: self.select_category(btn.text))
+            self.dropdown_1.add_widget(btn)
+
+
+        self.main_button_1.bind(on_release=self.dropdown_1.open)
+        self.main_button_2.bind(on_release=self.open_second_dropdown)
+
+
+    def select_category(self, category):
+        self.main_button_1.text = category
+        self.dropdown_1.dismiss()
+        self.populate_second_dropdown(self.data[category])
+
+
+    def populate_second_dropdown(self, options):
+        self.dropdown_2.clear_widgets()
+        for option in options:
+            btn = Button(text=option, size_hint_y=None, height=40)
+            btn.bind(on_release=lambda btn: self.select_option(btn.text))
+            self.dropdown_2.add_widget(btn)
+
+
+    def select_option(self, option):
+        self.main_button_2.text = option
+        self.dropdown_2.dismiss()
+
+
+    def open_second_dropdown(self, instance):
+        if len(self.dropdown_2.children) > 0:
+            self.dropdown_2.open(self.main_button_2)
+
+
+    def get_selection(self):
+        return self.main_button_1.text, self.main_button_2.text
+#--------------------------------------------------------------------------------------------------------------------
 class two_slide(App):
     def build(self):
-        main_l = BoxLayout(orientation='vertical')
-        box1 = BoxLayout(orientation='horizontal')
-        box2 = BoxLayout(orientation='horizontal')
-        self.mainbutton = Button(
-            text='class:', size_hint=(None, None),
-            size=(250, 75), pos_hint={'center_x': .10, 'top': 1}
-        )
+
+        data = {
+            "маг": ["посох", "волшебная палочка", "магические перчатки"],
+            "друид":["посох","магический шар","ничего"],
+            "паладин":["меч","двуручный меч","копье","алебарда","моргенштерн"],
+            "некромант":["боевая коса"," отравленный кенжал","скытые клинки"],
+            "варвар":["парные топоры","молот","двуручный топор", "кастеты"],
+            "бард":["гитара","балалайка","укулеле","гусли"]
+        }
+        data2 = {
+            "защита": ["железные поножи", "железный нагрудник", "ботинки на скорость", "железный шлем",],
+            "поддержка":["зелье хила","зелье стамины","бинты х 10","зелье ярости"],
+            "атака":["точильный станок","улучшеная рукоять","дополнительный клинок","утонщенное лезвие","утолщенное лезвие"],
+        }
+
+        links = LinkedDropdowns(data)
+        links2 = LinkedDropdowns2(data2)
+
+        layout = BoxLayout(orientation='vertical')
+        layout.add_widget(links)
+        layout.add_widget(links2)
+
+        return layout
         
-        box1.add_widget(self.mainbutton)
-        self.dropdown = DropDown()
-        btn = Button(text='mag', size_hint_y=None, height=40)
-        btn.bind(on_release=lambda btn: self.dropdown.select(btn.text))
-        self.dropdown.add_widget(btn)
-        btn1 = Button(text='druid', size_hint_y=None, height=40)
-        btn1.bind(on_release=lambda btn1: self.dropdown.select(btn1.text))
-        self.dropdown.add_widget(btn1)
-        
-        self.mainbutton.add_widget(self.dropdown)
-        self.mainbutton.bind(on_release=self.dropdown.open)
-
-#------------------------------------------------------2----------------------------------------------
-
-        self.mainbutton3 = Button(
-            text='class:', size_hint=(None, None),
-            size=(250, 75), pos_hint={'center_x': .10, 'top': 1}
-        )
-        
-        box2.add_widget(self.mainbutton3)
-        self.dropdown = DropDown()
-        
-
-        
-        self.mainbutton3.add_widget(self.dropdown)
-        self.mainbutton3.bind(on_release=self.dropdown.open)
-
-#-----------------------------------------------------------------------------------------------------
-        self.mainbutton2 = Button(
-            text='additional weapon', size_hint=(None, None),
-            size=(250, 75), pos_hint={'center_x': .10, 'top': 1}
-        )
-        
-        box2.add_widget(self.mainbutton2)
-        self.dropdown = DropDown()
-        btn2 = Button(text='shield', size_hint_y=None, height=40)
-        btn2.bind(on_release=lambda btn2: self.dropdown.select(btn2.text))
-        self.dropdown.add_widget(btn2)
-        
-        self.mainbutton2.add_widget(self.dropdown)
-        self.mainbutton2.bind(on_release=self.dropdown.open)
-
-#-----------------------------------------------------------------------------------------------------
-
-        self.mainbutton1 = Button(
-            text='armor:', size_hint=(None, None),
-            size=(250, 75), pos_hint={'center_x': .10, 'top': 1}
-        )
-        
-        box1.add_widget(self.mainbutton1)
-        self.dropdown = DropDown()
-        btn1 = Button(text='iron armor', size_hint_y=None, height=40)
-        btn1.bind(on_release=lambda btn1: self.dropdown.select(btn1.text))
-        self.dropdown.add_widget(btn1)
-        
-        self.mainbutton1.add_widget(self.dropdown)
-        self.mainbutton1.bind(on_release=self.dropdown.open)
-
-#-----------------------------------------------------------------------------------------------------
-
-        self.dropdown.bind(on_select=self.test)
-        main_l.add_widget(box1)
-        main_l.add_widget(box2)
-        return main_l
-
-    def test(self, instnce, x):
-        setattr(self.mainbutton,'text', x)
-        test = x
-        print(test)
-        # if heo_class == 'mag':
-        #     btn3 = Button(text='rabot', size_hint_y=None, height=40)
-        #     btn3.bind(on_release=lambda btn3: self.dropdown.select(btn3.text))
-        #     self.dropdown.add_widget(btn3)
-        # else:
-        #     btn3 = Button(text='mag', size_hint_y=None, height=40)
-        #     btn3.bind(on_release=lambda btn3: self.dropdown.select(btn3.text))
-        #     self.dropdown.add_widget(btn3)
-
-class MyApp(App):
-    def build(self):
-        sm = two_slide()
-        return sm
 
 app = two_slide()
 app.run()
