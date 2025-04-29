@@ -21,7 +21,7 @@ class LinkedDropdowns(BoxLayout):
         layout2 = BoxLayout(orientation='horizontal')
         layout3 = BoxLayout(orientation='horizontal')
         layout4 = BoxLayout(orientation='horizontal')
-        
+        layout5 = BoxLayout(orientation='vertical')
 
         self.main_button_1 = Button(text='класс', size_hint=(None, None), pos_hint={'top': 1}, size=(250, 50))
         self.main_button_2 = Button(text='оружие', size_hint=(None, None), pos_hint={'top': 1}, size=(250, 50))
@@ -29,7 +29,7 @@ class LinkedDropdowns(BoxLayout):
         self.main_button_3 = Button(text='скилл1', size_hint=(None, None), size=(250, 50))
         self.main_button_4 = Button(text='скилл2', size_hint=(None, None), size=(250, 50))
         self.main_button_5 = Button(text='скилл3', size_hint=(None, None), pos_hint={'top': 1}, size=(250, 50))
-        # self.main_button_6 = Button(text='скилл', size_hint=(None, None), pos_hint={'top': 1}, size=(250, 50))
+        self.main_button_6 = Button(text='скилл', size_hint=(None, None), pos_hint={'top': 1}, size=(250, 50))
 
 
         
@@ -37,13 +37,15 @@ class LinkedDropdowns(BoxLayout):
         self.add_widget(self.main_button_2)
         layout1.add_widget(self.main_button_5)
 
-        layout1.add_widget(self.main_button_3)
+        layout5.add_widget(self.main_button_3)
         layout4.add_widget(self.main_button_4)
-        
+        layout5.add_widget(self.main_button_6)
+    
 
         layout1.add_widget(layout2)
         layout1.add_widget(layout3)
         layout1.add_widget(layout4)
+        layout4.add_widget(layout5)
 
         
         self.add_widget(layout)
