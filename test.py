@@ -1,9 +1,13 @@
+
 from kivy.app import App
 import sys
+from kivy.uix.gridlayout import GridLayout
 from kivy.uix.dropdown import DropDown
 from kivy.uix.button import Button
+from kivy.uix.label import Label
 from kivy.uix.boxlayout import BoxLayout
 from kivy.core.window import Window
+from kivy.uix.screenmanager import Screen, ScreenManager
 
 Window.size = (1300, 510)
 heo_class = ''
@@ -16,40 +20,46 @@ class LinkedDropdowns(BoxLayout):
 
         self.data = data
 
-        layout = BoxLayout(orientation='vertical')
-        layout1 = BoxLayout(orientation='vertical')
-        layout2 = BoxLayout(orientation='horizontal')
-        layout3 = BoxLayout(orientation='horizontal')
-        layout4 = BoxLayout(orientation='horizontal')
-        layout5 = BoxLayout(orientation='vertical')
+
+        self.orientation = 'horizontal'
+        self.spacing = 100
+        self.pos_hint = {'center_y': 1}
+
+        self.grid1 = GridLayout()
+        self.grid2 = GridLayout()
+
+        self.grid1.rows = 2
+        self.grid1.cols = 2
+
+        self.grid2.rows = 2
+        self.grid2.cols = 2
+
+        self.grid1.spacing = [50, 100]
+        self.grid2.spacing = [50, 100]
+        self.grid1.size_hint = (0.5, 0.5)
+        self.grid2.size_hint = (0.5, 0.5)
+
 
         self.main_button_1 = Button(text='класс', size_hint=(None, None), pos_hint={'top': 1}, size=(250, 50))
         self.main_button_2 = Button(text='оружие', size_hint=(None, None), pos_hint={'top': 1}, size=(250, 50))
-
         self.main_button_3 = Button(text='скиллы', size_hint=(None, None), size=(250, 50))
         self.main_button_4 = Button(text='скилл2', size_hint=(None, None), size=(250, 50))
         self.main_button_5 = Button(text='скилл3', size_hint=(None, None), pos_hint={'top': 1}, size=(250, 50))
         self.main_button_6 = Button(text='скилл', size_hint=(None, None), size=(250, 50))
 
+        self.grid1.add_widget(self.main_button_1)
 
+        self.grid1.add_widget(self.main_button_2)
+        self.grid2.add_widget(self.main_button_5)
+
+        self.grid2.add_widget(self.main_button_3)
+        self.grid2.add_widget(self.main_button_4)
+        self.grid2.add_widget(self.main_button_6)
         
-        self.add_widget(self.main_button_1)
-        self.add_widget(self.main_button_2)
-        layout1.add_widget(self.main_button_5)
+        self.add_widget(self.grid1)
+        self.add_widget(self.grid2)
 
-        layout5.add_widget(self.main_button_3)
-        layout4.add_widget(self.main_button_4)
-        layout5.add_widget(self.main_button_6)
-    
 
-        layout1.add_widget(layout2)
-        layout1.add_widget(layout3)
-        layout1.add_widget(layout4)
-        layout4.add_widget(layout5)
-
-        
-        self.add_widget(layout)
-        self.add_widget(layout1)
         self.dropdown_1 = DropDown()
         self.dropdown_2 = DropDown()
         self.dropdown_3 = DropDown()
@@ -71,6 +81,10 @@ class LinkedDropdowns(BoxLayout):
         self.main_button_4.bind(on_release=self.open_four_dropdown)
         self.main_button_5.bind(on_release=self.open_fife_dropdown)
         self.main_button_6.bind(on_release=self.open_six_dropdown)
+
+        
+    
+        
     def select_category(self, category):
         self.main_button_1.text = category
         self.dropdown_1.dismiss()
@@ -169,8 +183,8 @@ class LinkedDropdowns(BoxLayout):
 class LinkedDropdowns2(BoxLayout):
     def __init__(self, data: dict[str, list[str]], **kwargs):
         super().__init__(**kwargs)
-
-
+        
+        self.spacing = 50
         self.data = data
 
 
@@ -223,9 +237,10 @@ class LinkedDropdowns2(BoxLayout):
     def get_selection(self):
         return self.main_button_1.text, self.main_button_2.text
 #--------------------------------------------------------------------------------------------------------------------
-class two_slide(App):
-    def build(self):
 
+class FirstScr(Screen):
+    def __init__(self, name='first'):
+        super().__init__(name=name)
         data = {
             "маг": {
                 'weapons': ["посох", "волшебная палочка", "магические перчатки"],
@@ -246,12 +261,52 @@ class two_slide(App):
         links = LinkedDropdowns(data)
         links2 = LinkedDropdowns2(data2)
 
+        self.btn = Button(text='дальше', size_hint=(None, None), size=(250, 50))
+        self.btn.on_press = self.next2
+
         layout = BoxLayout(orientation='vertical')
         layout.add_widget(links)
         layout.add_widget(links2)
+        layout.add_widget(self.btn)
 
-        return layout
+        self.add_widget(layout)
+
+    def next2(self):
+        self.manager.transition.direction = 'left'                                    
+        self.manager.current = 'two'
+
+
+
+
+
+class SecondScr(Screen):
+    def __init__(self, name='two'):
+        super().__init__(name=name)
         
+        self.txt = Label(text='1')
+        self.txt1 = Label(text='2')
+        self.txt2 = Label(text='3')
+        self.txt3 = Label(text='4')
+
+        layout1 = BoxLayout(orientation='horizontal')
+        layout1.add_widget(self.txt)
+        layout1.add_widget(self.txt1)
+        layout1.add_widget(self.txt2)
+        layout1.add_widget(self.txt3)
+        self.add_widget(layout1)
+
+
+
+
+
+class two_slide(App):
+    def build(self):
+        sm = ScreenManager()
+        sm.add_widget(FirstScr())
+        sm.add_widget(SecondScr())
+        return sm
+        
+
 
 app = two_slide()
 app.run()
