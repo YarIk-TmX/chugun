@@ -8,6 +8,7 @@ from kivy.uix.label import Label
 from kivy.uix.boxlayout import BoxLayout
 from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen, ScreenManager
+import random
 
 Window.size = (1300, 680)
 heo_class = ''
@@ -179,7 +180,7 @@ class LinkedDropdowns(BoxLayout):
 
     def get_selection(self):
         return self.main_button_1.text, self.main_button_2.text
-#-------------------------------------------------------2----------------------------------------------------------------
+#------------------------------------------------------------------------------------------------------------------------
 class LinkedDropdowns2(BoxLayout):
     def __init__(self, data: dict[str, list[str]], **kwargs):
         super().__init__(**kwargs)
@@ -236,7 +237,7 @@ class LinkedDropdowns2(BoxLayout):
 
     def get_selection(self):
         return self.main_button_1.text, self.main_button_2.text
-#--------------------------------------------------------------------------------------------------------------------
+#------------------------------------------------------------------1-------------------------------------------------
 
 class FirstScr(Screen):
     def __init__(self, name='first'):
@@ -291,38 +292,66 @@ class FirstScr(Screen):
         self.manager.transition.direction = 'left'                                    
         self.manager.current = 'two'
 
-
-
-
+#-------------------------------------------------------------------------2-----------------------------------------------------------
 
 class SecondScr(Screen):
     def __init__(self, name='two'):
         super().__init__(name=name)
         
-        self.txt = Label(text='1')
-        self.txt1 = Label(text='2')
-        self.txt2 = Label(text='3')
-        self.txt3 = Label(text='4')
+        self.txt = Label(text='xp:')
+        self.txt1 = Label(text='броня:')
+        self.txt2 = Label(text='стамина:')
+        self.txt3 = Label(text='ловкость:')
+        self.btn10 = Button(text='сгенерировать', size_hint=(None, None), size=(250, 50))
+        self.btn10.on_press = self.rand
+        self.btn11 = Button(text='продолжить', size_hint=(None, None), size=(250, 50))
+        self.btn11.on_press = self.next3
+            
 
+        layout2 = BoxLayout(orientation='vertical')
         layout1 = BoxLayout(orientation='horizontal')
         layout1.add_widget(self.txt)
         layout1.add_widget(self.txt1)
         layout1.add_widget(self.txt2)
         layout1.add_widget(self.txt3)
-        self.add_widget(layout1)
+        layout1.add_widget(self.btn10)
+        layout1.add_widget(self.btn11)
+        layout2.add_widget(layout1)
+
+        self.add_widget(layout2)
+    
+    def rand(self):
+        number = random.randint(10, 20)
+        number1 = random.randint(10, 20)
+        number2 = random.randint(10, 20)
+        number3 = random.randint(10, 20)
+        self.txt.text = 'xp: ' + str(number)
+        self.txt1.text = 'броня: ' + str(number1)
+        self.txt2.text = 'стамина: ' + str(number2)
+        self.txt3.text = 'ловкость: ' + str(number3)
+        print(number)
+    def next3(self):
+        self.manager.transition.direction = 'left'                                    
+        self.manager.current = 'three'
+
+
+
+class ThreeScr(Screen):
+    def __init__(self, name='three'):
+        super().__init__(name=name)
 
 
 
 
-
-class two_slide(App):
+class osnova_slide(App):
     def build(self):
         sm = ScreenManager()
         sm.add_widget(FirstScr())
         sm.add_widget(SecondScr())
+        sm.add_widget(ThreeScr())
         return sm
         
 
 
-app = two_slide()
+app = osnova_slide()
 app.run()
